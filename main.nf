@@ -2,11 +2,15 @@ nextflow.enable.dsl = 2
 params.publish_dir_mode = 'copy'
 params.samplesheet = false
 params.reference = 'Col-CEN_v1.2'
-params.ref_genome = '/dss/dsslegfs01/pn73so/pn73so-dss-0000/becker_common/reference_genomes/Arabidopsis/Col-CEN/'
+params.ref_genome = '/dss/dsslegfs01/pn73so/pn73so-dss-0000/becker_common/reference_genomes/Arabidopsis/Col-CEN/Col-CEN_v1.2.fasta'
+params.pairwise = false
 
 include { ALIGN_GENOMES} from './modules/align/main'
 include { SYRI } from './modules/syri/main' 
 include { PLOTSR } from './modules/plotsr/main' 
+include { ALIGN_PAIRWISE } from './modules/align/main'
+include { SYRI_PAIRWISE } from './modules/syri/main' 
+include { PLOTSR_PAIRWISE } from './modules/plotsr/main' 
 
 /*
 Samplesheet: 
@@ -44,5 +48,21 @@ workflow RUN_SYRI {
 }
 
 workflow {
+  if(params.pairwise) {
+    if(params.samplesheet) {
+       ch_chunked = Channel.fromPath(params.samplesheet) 
+                        .splitCsv(header:true)       
+                        | collate(2, 1, false)
+    }
+    ch_chunked.map { row -> [ref_name = row[0].name, ref_path = row[0].path, query_name = row[1].name, query_path = row[1].path]}
+    .set {ch_chunked}
+    ALIGN_PAIRWISE(ch_chunked) 
+    SYRI_PAIRWISE(ALIGN_PAIRWISE.out)
+    ch_syri = SYRI_PAIRWISE.out.syri_out
+              .map{ it -> it[2]}
+              .collect()
+    PLOTSR_PAIRWISE(ch_syri)
+  } else {
   RUN_SYRI()
+  }
 }

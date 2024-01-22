@@ -24,3 +24,27 @@ process PLOTSR {
         plotsr ${meta}_on_${reference}.syri.out $reference $meta -H 8 -W 5 -o ${meta}_on_${reference}.plotsr.pdf
         """
 }
+process PLOTSR_PAIRWISE {
+    tag "BIGPLOT"
+    label 'process_low'
+    publishDir "${params.out}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename,
+                                        options:params.options, 
+                                        publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
+                                        publish_id:meta) }
+    input:
+        path(syri_out)
+
+    output:
+        path("*.pdf"), emit: figure
+
+    script:
+    def process_syri = syri_out{ "--sr $it" }.join('\\ \n')
+        """
+        $params.samplesheet | cut -f2,1 > genomes.txt
+        plotsr --genomes genomes.txt \\
+        $process_syri \\
+        -o plot.pdf
+        """
+}
