@@ -36,18 +36,20 @@ process ALIGN_PAIRWISE {
         saveAs: { filename -> saveFiles(filename:filename,
                                         options:params.options, 
                                         publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:meta) }
+                                        publish_id:"${query}_${reference}") }
     input:
         tuple val(reference), path(reference_genome), val(query), path(query_genome)
 
     output:
-        tuple val(reference), val(query), path("*.bam"), emit: alignment
+        tuple val(reference), path(reference_genome), val(query), path(query_genome), path("*.bam"), path("*.bai"), emit: alignment
 
     script:
         """
         minimap2 -t $task.cpus \\
             -ax asm5 \\
             --eqx \\
-            | samtools sort -o ${reference_genome} ${query_genome} > ${query}_on_${reference}.bam
+            ${reference_genome} ${query_genome} \\
+            | samtools sort -O BAM -@ $task.cpus > ${query}_on_${reference}.bam
+            samtools index ${query}_on_${reference}.bam
         """
 }

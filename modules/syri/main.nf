@@ -36,17 +36,17 @@ process SYRI_PAIRWISE {
         saveAs: { filename -> saveFiles(filename:filename,
                                         options:params.options, 
                                         publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:meta) }
+                                        publish_id:"${query}_${reference}") }
     input:
-        tuple val(reference), val(query), path(alignment)
+        tuple val(reference), path(reference_genome), val(query), path(query_genome), path(alignment), path(index)
 
     output:
-        tuple val("${query}_${reference}"), path("*syri.out"), emit: syri_out
-        tuple val("${query}_${reference}"), path("*syri.vcf"), emit: syri_vcf
+        tuple val(reference), val(query), path("*syri.out"), emit: syri_out
+        tuple val(reference), val(query), path("*syri.vcf"), emit: syri_vcf
 
     script:
         """
-        syri -c  ${alignment} -r ${reference} -q ${query} -k -F B -ncores $task.cpus
+        syri -c  ${alignment} -r ${reference_genome} -q ${query_genome} -k -F B --nc $task.cpus
         mv syri.out ${query}_on_${reference}.syri.out
         mv syri.vcf ${query}_on_${reference}.syri.vcf
         """

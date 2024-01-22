@@ -32,7 +32,7 @@ process PLOTSR_PAIRWISE {
         saveAs: { filename -> saveFiles(filename:filename,
                                         options:params.options, 
                                         publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:meta) }
+                                        publish_id:"plot") }
     input:
         path(syri_out)
 
