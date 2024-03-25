@@ -21,7 +21,7 @@ process PLOTSR {
 
     script:
         """
-        plotsr ${meta}_on_${reference}.syri.out $reference $meta -H 8 -W 5 -o ${meta}_on_${reference}.plotsr.pdf
+        micromamba run -n base plotsr ${meta}_on_${reference}.syri.out $reference $meta -H 8 -W 5 -o ${meta}_on_${reference}.plotsr.pdf
         """
 }
 process PLOTSR_PAIRWISE {
@@ -34,17 +34,45 @@ process PLOTSR_PAIRWISE {
                                         publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
                                         publish_id:"plot") }
     input:
-        path(syri_out)
+        path(in_files)
+        val(names)
+        val(genomes)
 
     output:
         path("*.pdf"), emit: figure
 
     script:
-    def process_syri = syri_out{ "--sr $it" }.join('\\ \n')
-        """
-        $params.samplesheet | cut -f2,1 > genomes.txt
-        plotsr --genomes genomes.txt \\
-        $process_syri \\
-        -o plot.pdf
-        """
-}
+    """
+    files_array=( ${in_files} )
+    files="\${files_array[@]/#/--sr }"
+    echo \$files > files.txt
+
+    names_array=(${names})
+    echo \$names_array > names.txt
+
+    genomes_array=(${genomes})
+    echo \$genomes_array > genomes.txt
+
+    sed -i 's/\\[//g' genomes.txt 
+    sed -i 's/\\]//g' genomes.txt 
+    sed -i 's/,//g' genomes.txt 
+    for x in `cat genomes.txt`
+    do
+        echo \$x
+    done > genomes.col
+
+    sed -i 's/\\[//g' names.txt 
+    sed -i 's/\\]//g' names.txt 
+    sed -i 's/,//g' names.txt 
+    for x in `cat names.txt`
+    do
+        echo \$x
+    done > names.col
+
+    paste names.col genomes.col >> plotsr_infile.tsv
+
+    micromamba run -n base plotsr --genomes plotsr_infile.tsv \\
+    \$files \\
+    -o plot.pdf
+    """
+} 

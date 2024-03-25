@@ -4,6 +4,7 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process SYRI {
+    fair true
     tag "$meta"
     label 'process_low'
     publishDir "${params.out}",
@@ -22,7 +23,7 @@ process SYRI {
 
     script:
         """
-        syri -c -r ${reference} -q ${meta} -k -F B -ncores $task.cpus
+        micromamba run -n base syri -c -r ${reference} -q ${meta} -k -F B -ncores $task.cpus
         mv syri.out ${meta}_on_${reference}.syri.out
         mv syri.vcf ${meta}_on_${reference}.syri.vcf
         """
@@ -46,7 +47,7 @@ process SYRI_PAIRWISE {
 
     script:
         """
-        syri -c  ${alignment} -r ${reference_genome} -q ${query_genome} -k -F B --nc $task.cpus
+        micromamba run -n base syri -c ${alignment} -r ${reference_genome} -q ${query_genome} -k -F B --nc $task.cpus
         mv syri.out ${query}_on_${reference}.syri.out
         mv syri.vcf ${query}_on_${reference}.syri.vcf
         """
