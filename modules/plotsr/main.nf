@@ -1,17 +1,12 @@
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process PLOTSR {
     tag "$meta"
     label 'process_low'
-    publishDir "${params.out}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename,
-                                        options:params.options, 
-                                        publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:meta) }
+    publishDir(
+      path: { "${params.out}/${task.process}".replace(':','/').toLowerCase() }, 
+      mode: 'copy',
+      overwrite: true,
+      saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
+    ) 
     input:
         tuple val(meta), path(syri_out)
         val(reference)
@@ -19,20 +14,25 @@ process PLOTSR {
     output:
         tuple val(meta), path("*plotsr.pdf"), emit: figure
 
+    def plotsr_conf = file("$projectDir/assets/plotsr_config.conf", checkIfExists: true)
     script:
         """
-        micromamba run -n base plotsr ${meta}_on_${reference}.syri.out $reference $meta -H 8 -W 5 -o ${meta}_on_${reference}.plotsr.pdf
+        micromamba run -n base plotsr \\
+            ${meta}_on_${reference}.syri.out $reference $meta \\
+            -H 8 -W 5 \\
+            --cfg $plotsr_conf \\
+            -o ${meta}_on_${reference}.plotsr.pdf 
         """
 }
 process PLOTSR_PAIRWISE {
     tag "BIGPLOT"
     label 'process_low'
-    publishDir "${params.out}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename,
-                                        options:params.options, 
-                                        publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:"plot") }
+    publishDir(
+      path: { "${params.out}/${task.process}".replace(':','/').toLowerCase() }, 
+      mode: 'copy',
+      overwrite: true,
+      saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
+    ) 
     input:
         path(in_files)
         val(names)
@@ -41,6 +41,7 @@ process PLOTSR_PAIRWISE {
     output:
         path("*.pdf"), emit: figure
 
+    def plotsr_conf = file("$projectDir/assets/plotsr_config.conf", checkIfExists: true)
     script:
     """
     files_array=( ${in_files} )
@@ -69,10 +70,11 @@ process PLOTSR_PAIRWISE {
         echo \$x
     done > names.col
 
-    paste names.col genomes.col >> plotsr_infile.tsv
+    paste genomes.col names.col >> plotsr_infile.tsv
 
     micromamba run -n base plotsr --genomes plotsr_infile.tsv \\
     \$files \\
+    --cfg ${plotsr_conf} \\
     -o plot.pdf
     """
 } 

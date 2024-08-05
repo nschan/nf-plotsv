@@ -1,23 +1,18 @@
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process FIXCHR {
     fair true
     tag "$query"
     label 'process_low'
-    publishDir "${params.out}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename,
-                                        options:params.options, 
-                                        publish_dir:"${task.process}".replace(':','/').toLowerCase(), 
-                                        publish_id:meta) }
+    publishDir(
+      path: { "${params.out}/${task.process}".replace(':','/').toLowerCase() }, 
+      mode: 'copy',
+      overwrite: true,
+      saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
+    ) 
     input:
-        tuple val(reference), path(reference_genome), val(query), path(query_genome), path(alignment)
+        tuple val(reference), path(reference_genome), val(query), path(query_genome), path(alignment), path(index)
 
     output:
-        tuple val(reference), val(query), path(query_genome), path("*input_alignments.txt"), emit: alignment_info
+        tuple val(query), path("*qry.filtered.fa"), emit: fixed_query
 
     script:
         """
