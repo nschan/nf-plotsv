@@ -10,6 +10,7 @@ process PLOTSR {
     input:
         tuple val(meta), path(syri_out)
         val(reference)
+        path(plotsr_conf)
 
     output:
         tuple val(meta), path("*plotsr.pdf"), emit: figure
@@ -37,11 +38,11 @@ process PLOTSR_PAIRWISE {
         path(in_files)
         val(names)
         val(genomes)
+        path(plotsr_conf)
 
     output:
         path("*.pdf"), emit: figure
 
-    def plotsr_conf = file("$projectDir/assets/plotsr_config.conf", checkIfExists: true)
     script:
     """
     files_array=( ${in_files} )
