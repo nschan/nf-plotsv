@@ -32,6 +32,7 @@ Niklas Schandry                                  niklas@bio.lmu.de              
      samplesheet     : ${params.samplesheet}
      reference       : ${params.reference}
      ref_genome      : ${params.ref_genome}
+     reorient        : ${params.reorient}
      pairwise        : ${params.pairwise}
      subset_pattern  : ${params.subset_pattern}
      plotsr config   : ${params.plotsr_conf}
@@ -54,25 +55,28 @@ workflow PREPARE_GENOMES {
     input
 
   main:
-    input
-    | SUBSET
-    | branch { row ->
-        REF: row[0] == params.reference
-        ASSEMBLY: row[0] != params.reference
-      }
-    | set { ch_branched }
 
-    ALIGN_GENOMES(ch_branched.ASSEMBLY, tuple(params.reference, params.ref_genome))
-    | FIXCHR
-    //| SEQTK_ORIENT
-    | map { it -> [name: it[0], path: it[1]]}
-    | set { fixed }
-
-    ch_branched.REF
-    .concat(fixed)
-    .set { fixed }
-
-
+    if(params.reorient) {
+      input
+        | SUBSET
+        | branch { row ->
+            REF: row[0] == params.reference
+            ASSEMBLY: row[0] != params.reference }
+        | set { ch_branched }
+      ALIGN_GENOMES(ch_branched.ASSEMBLY, tuple(params.reference, params.ref_genome))
+        | FIXCHR
+        | map { it -> [name: it[0], path: it[1]]}
+        | set { fixed }
+      ch_branched.REF
+        .concat(fixed)
+        .set { fixed }
+    } else {
+          input
+          | SUBSET
+          | map { it -> [name: it[0], path: it[1]]}
+          | set { fixed }
+    }
+    
   emit:
     fixed
 } 
@@ -97,29 +101,49 @@ workflow PLOTSV {
   if(params.pairwise) {
     ch_order
       .cross(PREPARE_GENOMES.out)
-      .map { it -> it[1]}
+      .map { it -> it[1] }
       .collate(2, 1, false)
       .set { ch_chunked }
       
 
-    ch_chunked.map { it -> [ref_name: it[0].name, ref_path: it[0].path, query_name: it[1].name, query_path: it[1].path]}
+    ch_chunked.map { it -> [name_A: it[0].name, genome_A: it[0].path, name_B: it[1].name, genome_B: it[1].path]}
       .set { ch_chunked }
 
 
-    ch_chunked.map { it -> [ref_name: it.ref_name, query_name: it.query_name] }
+    ch_chunked.map { it -> [[it.name_A, it.name_B]] }
+      //.toList()
+      //.dump(tag: 'chunk_order')
       .set { ch_chunk_order }
 
     ch_chunked
     | ALIGN_PAIRWISE
     | SYRI_PAIRWISE
-
-    ch_chunk_order
-      .cross(SYRI_PAIRWISE.out.syri_out)
-      .map { it -> it[1][2] }
-      .collect()
-      .set { plotsr_in }
     
-    PREPARE_GENOMES.out
+    /*
+    SYRI_PAIRWISE
+      .out
+      .syri_out
+    */
+    SYRI_PAIRWISE
+      .out
+      .syri_out
+      .map { it -> it[2] }
+      .collect()
+      .dump(tag: 'SYRI_out')
+      .set { plotsr_in }
+      
+    /*
+    ch_chunk_order
+      .join(syri_mapped, by: 0)
+      .map { it -> it[1] }
+      .collect()
+      .dump(tag: 'SYRI_out')
+      .set { plotsr_in }
+    */
+
+    ch_order
+      .cross(PREPARE_GENOMES.out)
+      .map { it -> it[1] }
       .map { it -> it.path }
       .collect()
       .set { ch_prepared_files }
@@ -128,6 +152,7 @@ workflow PLOTSV {
       .map { it -> it.name }
       .flatten()
       .collect()
+      //.dump(tag: 'plotsr_names')
       .set { ch_names }
 
     PLOTSR_PAIRWISE(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf)
