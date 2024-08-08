@@ -47,8 +47,8 @@ process ALIGN_PAIRWISE {
         minimap2 -t $task.cpus \\
             -ax asm5 \\
             --eqx \\
-            ${genome_B} ${genome_A}\\
-            | samtools sort -O BAM -@ $task.cpus > ${name_A}_on_${name_B}.bam
-            samtools index ${name_A}_on_${name_B}.bam
+            ${genome_A} ${genome_B} \\
+            | samtools sort -O BAM -@ $task.cpus > ${name_B}_on_${name_A}.bam
+            samtools index ${name_B}_on_${name_A}.bam
         """
 }

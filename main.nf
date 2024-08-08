@@ -36,6 +36,8 @@ Niklas Schandry                                  niklas@bio.lmu.de              
      pairwise        : ${params.pairwise}
      subset_pattern  : ${params.subset_pattern}
      plotsr config   : ${params.plotsr_conf}
+     plotsr args     : ${params.plotsr_args}
+     plotsr tracks   : ${params.plotsr_tracks}
 =======================================================================================================================
 =======================================================================================================================
 """
@@ -109,21 +111,18 @@ workflow PLOTSV {
     ch_chunked.map { it -> [name_A: it[0].name, genome_A: it[0].path, name_B: it[1].name, genome_B: it[1].path]}
       .set { ch_chunked }
 
-
+    /*
     ch_chunked.map { it -> [[it.name_A, it.name_B]] }
       //.toList()
       //.dump(tag: 'chunk_order')
       .set { ch_chunk_order }
+    */
 
     ch_chunked
     | ALIGN_PAIRWISE
     | SYRI_PAIRWISE
     
-    /*
-    SYRI_PAIRWISE
-      .out
-      .syri_out
-    */
+
     SYRI_PAIRWISE
       .out
       .syri_out
@@ -132,15 +131,6 @@ workflow PLOTSV {
       .dump(tag: 'SYRI_out')
       .set { plotsr_in }
       
-    /*
-    ch_chunk_order
-      .join(syri_mapped, by: 0)
-      .map { it -> it[1] }
-      .collect()
-      .dump(tag: 'SYRI_out')
-      .set { plotsr_in }
-    */
-
     ch_order
       .cross(PREPARE_GENOMES.out)
       .map { it -> it[1] }
@@ -155,12 +145,12 @@ workflow PLOTSV {
       //.dump(tag: 'plotsr_names')
       .set { ch_names }
 
-    PLOTSR_PAIRWISE(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf)
+    PLOTSR_PAIRWISE(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf, params.plotsr_args, params.plotsr_tracks, params.plotsr_colors)
     
   } else {
     ALIGN_GENOMES(PREPARE_GENOMES.out, tuple(params.reference, params.ref_genome))
     SYRI(ALIGN_GENOMES.out)
-    PLOTSR(SYRI.out.syri_out, params.reference, params.plotsr_conf)
+    PLOTSR(SYRI.out.syri_out, params.reference, params.plotsr_conf, params.plotsr_args)
   }
 }
 

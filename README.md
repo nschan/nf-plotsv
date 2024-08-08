@@ -33,7 +33,13 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 | subset_pattern | Pattern used for subsetting genomes in samplesheet | `"Chr[1-5]"` |
 | out | Directory for results | `'./'` |
 | plotsr_conf | Config file for plotsr | `"$projectDir/assets/plotsr_config.conf"` |
+| plotsr_args | Extra arguments for plotsr | `'-S 0.7 -W 5 -H 5 -f 12'` |
+| plotsr_tracks | path to tracks file for plotsr, see [here](https://github.com/schneebergerlab/plotsr/blob/master/README.md#visualising-tracks). | `''` |
+| plotsr_colors | Color palette to use. | [alphabet palette](https://kwstat.github.io/pals/reference/discrete.html) |
 
+
+> plotsr_tracks needs to be a full path, e.g. something like "$PWD/tracks.txt" should work.
+> plotsr_colors need to be provided as hex or something, see nextflow.config
 
 ## Pairwise mode
 
