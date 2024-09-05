@@ -1,6 +1,7 @@
 # nf-plotsv
 
 This [`nextflow`](https://nextflow.io) pipeline can be used to analyze genomes using [`syri`](https://schneebergerlab.github.io/syri/) and [`plotsr`](https://github.com/schneebergerlab/plotsr/). Whole genome alignments are created using minimap2, oriented and re-alinged if needed, and then passed to syri and then to plotsr.
+This [`nextflow`](https://nextflow.io) pipeline can be used to analyze genomes using [`syri`](https://schneebergerlab.github.io/syri/) and [`plotsr`](https://github.com/schneebergerlab/plotsr/). Whole genome alignments are created using minimap2, oriented and re-alinged if needed, and then passed to syri and then to plotsr.
 
 # Usage
 
@@ -92,6 +93,44 @@ This will create pairwise alignments from top to bottom of the samplesheet (i.e.
 }%%
 
 gitGraph TB:
+  commit id: "Subset by name [--subset_pattern]"
+  commit id: "Alignment"
+  commit id: "Identify / reorient misoriented [--reorient]"
+  branch "Align"
+  checkout "Align"
+  commit id: "Align sequences"
+  branch "SyRi / plotsr"
+  checkout "SyRi / plotsr"
+  commit id: "Run SyRi"
+  commit id: "Plot results"
+```
+
+# Pipeline graph
+
+```mermaid
+%%{init: {'theme': 'dark',
+          'themeVariables':{
+            'commitLabelColor': '#cccccc',
+            'commitLabelBackground': '#434244',
+            'commitLabelFontSize': '12px',
+            'tagLabelFontSize': '12px',
+            'git0': '#8db7d2',
+            'git1': '#58508d',
+            'git2': '#bc5090',
+            'git3': '#ff6361',
+            'git4': '#ffa600',
+            'git5': '#74a892',
+            'git6': '#d69e49',
+            'git7': '#00ffff'
+            },
+          'gitGraph': {
+            'mainBranchName': "Prepare Genome",
+             'parallelCommits': false
+             } 
+          }
+}%%
+
+gitGraph TB:
   commit id: "Subset by name"
   branch "Reorient"
   commit id: "Alignment"
@@ -121,6 +160,3 @@ This pipeline uses the following packages:
  - [`fixchr`](https://github.com/schneebergerlab/fixchr)
 
  - [`plotsr`](https://github.com/schneebergerlab/plotsr)
-
-
-
