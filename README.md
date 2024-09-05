@@ -1,6 +1,6 @@
 # nf-plotsv
 
-Here, whole genome alignments are created, oriented if needed, and then passed to syri and then to plotsr. The workflow is called `plotsv`, but the repo is named `nf-syri` and I am too lazy to make new one..
+Here, whole genome alignments are created, oriented if needed, and then passed to syri and then to plotsr.
 
 # Usage
 
