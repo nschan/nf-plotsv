@@ -1,6 +1,5 @@
 nextflow.enable.dsl = 2 
 
-include { SEQTK_ORIENT } from './modules/seqtk/main'
 include { SEQTK_SUBSET as SUBSET } from './modules/seqtk/main'
 include { SEQKIT_GET_LENGTH }  from './modules/seqkit/main'
 include { ALIGN_GENOMES } from './modules/align/main'
@@ -101,11 +100,11 @@ workflow PLOTSV {
    | set { ch_order }
 
   PREPARE_GENOMES(ch_input)
-  SEQKIT_GET_LENGTH(PREPARE_GENOMES.out)
-  SEQKIT_GET_LENGTH
-      .out
-      .collect()
-      .set { lengths }
+  //SEQKIT_GET_LENGTH(PREPARE_GENOMES.out)
+  //SEQKIT_GET_LENGTH
+  //    .out
+  //    .collect()
+  //    .set { lengths }
 
   if(params.pairwise) {
     ch_order
@@ -142,7 +141,6 @@ workflow PLOTSV {
       .map { it -> it.name }
       .flatten()
       .collect()
-      //.dump(tag: 'plotsr_names')
       .set { ch_names }
 
     PLOTSR_PAIRWISE(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf, params.plotsr_args, params.plotsr_tracks, params.plotsr_colors)
