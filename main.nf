@@ -1,7 +1,7 @@
 nextflow.enable.dsl = 2 
 
 include { SEQTK_SUBSET as SUBSET } from './modules/seqtk/main'
-include { SEQKIT_GET_LENGTH }  from './modules/seqkit/main'
+//include { SEQKIT_GET_LENGTH }  from './modules/seqkit/main'
 include { ALIGN_GENOMES } from './modules/align/main'
 include { FIXCHR } from './modules/fixchr/main'
 include { SYRI } from './modules/syri/main' 
@@ -100,6 +100,7 @@ workflow PLOTSV {
    | set { ch_order }
 
   PREPARE_GENOMES(ch_input)
+
   //SEQKIT_GET_LENGTH(PREPARE_GENOMES.out)
   //SEQKIT_GET_LENGTH
   //    .out
