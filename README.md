@@ -1,6 +1,6 @@
 # nf-plotsv
 
-Here, whole genome alignments are created, oriented if needed, and then passed to syri and then to plotsr.
+This [`nextflow`](https://nextflow.io) pipeline can be used to analyze genomes using [`syri`](https://schneebergerlab.github.io/syri/) and [`plotsr`](https://github.com/schneebergerlab/plotsr/). Whole genome alignments are created using minimap2, oriented and re-alinged if needed, and then passed to syri and then to plotsr.
 
 # Usage
 
@@ -57,14 +57,54 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 > plotsr_tracks needs to be a full path, e.g. something like "$PWD/tracks.txt" should work.
 > plotsr_colors need to be provided as hex or something, see nextflow.config
 
-## Pairwise mode
+### Pairwise mode
 
 `--pairwise`: create consecutive pairwise alignments from the samplesheet to create a plot across many genomes.
 This will create pairwise alignments from top to bottom of the samplesheet (i.e. align row2 on row1, row3 on row2, row4 on row3, etc) and then create a _single_ plot using plotsr.
 
-## plotsr
+### plotsr
 
 `plotsr` is controlled via a config file. Defaults to the one in `assets/`
+
+# Pipeline graph
+
+```mermaid
+%%{init: {'theme': 'dark',
+          'themeVariables':{
+            'commitLabelColor': '#cccccc',
+            'commitLabelBackground': '#434244',
+            'commitLabelFontSize': '12px',
+            'tagLabelFontSize': '12px',
+            'git0': '#8db7d2',
+            'git1': '#58508d',
+            'git2': '#bc5090',
+            'git3': '#ff6361',
+            'git4': '#ffa600',
+            'git5': '#74a892',
+            'git6': '#d69e49',
+            'git7': '#00ffff'
+            },
+          'gitGraph': {
+            'mainBranchName': "Prepare Genome",
+             'parallelCommits': false
+             } 
+          }
+}%%
+
+gitGraph TB:
+  commit id: "Subset by name"
+  branch "Reorient"
+  commit id: "Alignment"
+  branch "Align"
+  commit id: "Identify misoriented"
+  checkout "Align"
+  merge "Reorient" tag: "Oriented sequences"
+  commit id: "Align sequences"
+  branch "SyRi / plotsr"
+  checkout "SyRi / plotsr"
+  commit id: "Run SyRi"
+  commit id: "Plot results"
+```
 
 # Software used
 
