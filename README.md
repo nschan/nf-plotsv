@@ -92,13 +92,11 @@ This will create pairwise alignments from top to bottom of the samplesheet (i.e.
 }%%
 
 gitGraph TB:
-  commit id: "Subset by name"
-  branch "Reorient"
+  commit id: "Subset by name [--subset_pattern]"
   commit id: "Alignment"
+  commit id: "Identify / reorient misoriented [--reorient]"
   branch "Align"
-  commit id: "Identify misoriented"
   checkout "Align"
-  merge "Reorient" tag: "Oriented sequences"
   commit id: "Align sequences"
   branch "SyRi / plotsr"
   checkout "SyRi / plotsr"
@@ -121,6 +119,3 @@ This pipeline uses the following packages:
  - [`fixchr`](https://github.com/schneebergerlab/fixchr)
 
  - [`plotsr`](https://github.com/schneebergerlab/plotsr)
-
-
-
