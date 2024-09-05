@@ -105,46 +105,6 @@ gitGraph TB:
   commit id: "Plot results"
 ```
 
-# Pipeline graph
-
-```mermaid
-%%{init: {'theme': 'dark',
-          'themeVariables':{
-            'commitLabelColor': '#cccccc',
-            'commitLabelBackground': '#434244',
-            'commitLabelFontSize': '12px',
-            'tagLabelFontSize': '12px',
-            'git0': '#8db7d2',
-            'git1': '#58508d',
-            'git2': '#bc5090',
-            'git3': '#ff6361',
-            'git4': '#ffa600',
-            'git5': '#74a892',
-            'git6': '#d69e49',
-            'git7': '#00ffff'
-            },
-          'gitGraph': {
-            'mainBranchName': "Prepare Genome",
-             'parallelCommits': false
-             } 
-          }
-}%%
-
-gitGraph TB:
-  commit id: "Subset by name"
-  branch "Reorient"
-  commit id: "Alignment"
-  branch "Align"
-  commit id: "Identify misoriented"
-  checkout "Align"
-  merge "Reorient" tag: "Oriented sequences"
-  commit id: "Align sequences"
-  branch "SyRi / plotsr"
-  checkout "SyRi / plotsr"
-  commit id: "Run SyRi"
-  commit id: "Plot results"
-```
-
 # Software used
 
 This pipeline uses the following packages:
