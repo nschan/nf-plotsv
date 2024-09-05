@@ -56,7 +56,8 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 
 
 > plotsr_tracks needs to be a full path, e.g. something like "$PWD/tracks.txt" should work.
-> plotsr_colors need to be provided as hex or something, see nextflow.config
+
+> plotsr_colors need to be provided as hex, see nextflow.config
 
 ### Pairwise mode
 
