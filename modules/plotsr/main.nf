@@ -19,7 +19,7 @@ process PLOTSR {
     def plotsr_args = extra_args ?: ''
     script:
         """
-        micromamba run -n base plotsr \\
+        plotsr \\
             ${meta}_on_${reference}.syri.out $reference $meta \\
             -H 8 -W 5 \\
             --cfg $plotsr_conf \\
@@ -113,11 +113,11 @@ process PLOTSR_PAIRWISE {
 
     paste genomes.col names.col colors.col >> plotsr_infile.tsv
 
-    micromamba run -n base plotsr --genomes plotsr_infile.tsv \\
-    \$files \\
-    --cfg ${plotsr_conf} \\
-    $extra_args \\
-    ${plotsr_tracks} \\
-    -o plot.pdf
+    plotsr --genomes plotsr_infile.tsv \\
+        \$files \\
+        --cfg ${plotsr_conf} \\
+        $extra_args \\
+        ${plotsr_tracks} \\
+        -o plot.pdf
     """
 } 

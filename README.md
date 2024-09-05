@@ -4,9 +4,25 @@ Here, whole genome alignments are created, oriented if needed, and then passed t
 
 # Usage
 
-After cloning into home:
+After cloning into `$HOME` this pipeline can be run locally with `conda` environments like this:
 
-`nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile biohpc_gen,charliecloud`
+```
+nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile local,conda
+```
+
+Or locally with docker
+
+```
+nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile local,docker
+```
+
+Or on biohpc_gen@LRZ using charliecloud
+
+```
+nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile biohpc_gen,charliecloud
+```
+
+To run on other infrastructure, a matching config needs to be created (or copied from [`nf-core/configs`](https://github.com/nf-core/configs/conf))
 
 ## Samplesheet
 
@@ -50,19 +66,21 @@ This will create pairwise alignments from top to bottom of the samplesheet (i.e.
 
 `plotsr` is controlled via a config file. Defaults to the one in `assets/`
 
-# Steps
+# Software used
 
-minimap2 / samtools:
- -  Align queries to reference
+This pipeline uses the following packages:
 
-fixchr:
- - Orient chromosomes
+ - [`minimap2`](https://github.com/lh3/minimap2)
 
-minimap2 / samtools:
- - Align correctly oriented chromosomes
+ - [`seqtk`](https://github.com/lh3/seqtk)
 
-syri:
- - Use alignments
+ - [`seqkit`](https://bioinf.shenwei.me/seqkit/)
 
-plotsr:
- - plot syri output
+ - [`syri`](https://schneebergerlab.github.io/syri/)
+ 
+ - [`fixchr`](https://github.com/schneebergerlab/fixchr)
+
+ - [`plotsr`](https://github.com/schneebergerlab/plotsr)
+
+
+

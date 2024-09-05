@@ -17,7 +17,7 @@ process SYRI {
 
     script:
         """
-        micromamba run -n base syri -c ${alignment} -r ${reference_genome} -q ${query_genome} -k -F B --nc $task.cpus
+        syri -c ${alignment} -r ${reference_genome} -q ${query_genome} -k -F B --nc $task.cpus
         mv syri.out ${query}_on_${reference}.syri.out
         mv syri.vcf ${query}_on_${reference}.syri.vcf
         """
@@ -42,7 +42,7 @@ process SYRI_PAIRWISE {
 
     script:
         """
-        micromamba run -n base syri -c ${alignment} -r ${genome_A} -q ${genome_B} -k -F B --nc $task.cpus
+        syri -c ${alignment} -r ${genome_A} -q ${genome_B} -k -F B --nc $task.cpus
         mv syri.out ${name_B}_on_${name_A}.syri.out
         mv syri.vcf ${name_B}_on_${name_A}.syri.vcf
         """

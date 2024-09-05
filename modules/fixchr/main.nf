@@ -16,6 +16,6 @@ process FIXCHR {
 
     script:
         """
-        micromamba run -n base fixchr -c ${alignment} -F B -r ${reference_genome} -q ${query_genome} --prefix ${query} --log INFO --contig_size 5000 
+        fixchr -c ${alignment} -F B -r ${reference_genome} -q ${query_genome} --prefix ${query} --log INFO --contig_size 5000 
         """
 }

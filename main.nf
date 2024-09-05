@@ -2,6 +2,7 @@ nextflow.enable.dsl = 2
 
 include { SEQTK_ORIENT } from './modules/seqtk/main'
 include { SEQTK_SUBSET as SUBSET } from './modules/seqtk/main'
+include { SEQKIT_GET_LENGTH }  from './modules/seqkit/main'
 include { ALIGN_GENOMES } from './modules/align/main'
 include { FIXCHR } from './modules/fixchr/main'
 include { SYRI } from './modules/syri/main' 
@@ -24,7 +25,7 @@ log.info """\
                                                     ---------
                        Plot structural variation across genomes using the 'Schneeberger tools'
 -----------------------------------------------------------------------------------------------------------------------
-Niklas Schandry                                  niklas@bio.lmu.de                      gitlab.lrz.de/beckerlab/nf-syri      
+Niklas Schandry                                  niklas@bio.lmu.de                          github.com/nschan/nf-plotsv      
 -----------------------------------------------------------------------------------------------------------------------
   Results directory  : ${params.out}
 
@@ -78,7 +79,8 @@ workflow PREPARE_GENOMES {
           | map { it -> [name: it[0], path: it[1]]}
           | set { fixed }
     }
-    
+
+
   emit:
     fixed
 } 
@@ -99,7 +101,12 @@ workflow PLOTSV {
    | set { ch_order }
 
   PREPARE_GENOMES(ch_input)
- 
+  SEQKIT_GET_LENGTH(PREPARE_GENOMES.out)
+  SEQKIT_GET_LENGTH
+      .out
+      .collect()
+      .set { lengths }
+
   if(params.pairwise) {
     ch_order
       .cross(PREPARE_GENOMES.out)
