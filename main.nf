@@ -118,13 +118,6 @@ workflow PLOTSV {
     ch_chunked.map { it -> [name_A: it[0].name, genome_A: it[0].path, name_B: it[1].name, genome_B: it[1].path]}
       .set { ch_chunked }
 
-    /*
-    ch_chunked.map { it -> [[it.name_A, it.name_B]] }
-      //.toList()
-      //.dump(tag: 'chunk_order')
-      .set { ch_chunk_order }
-    */
-
     ch_chunked
     | ALIGN_PAIRWISE
     | SYRI_PAIRWISE
