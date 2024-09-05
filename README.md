@@ -22,7 +22,7 @@ Or on biohpc_gen@LRZ using charliecloud
 nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile biohpc_gen,charliecloud
 ```
 
-To run on other infrastructure, a matching config needs to be created (or copied from [`nf-core/configs`](https://github.com/nf-core/configs/conf))
+To run on other infrastructure, a matching config needs to be created (or copied from [`nf-core/configs`](https://github.com/nf-core/configs/tree/master/conf))
 
 ## Samplesheet
 
