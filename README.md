@@ -8,19 +8,19 @@ This [`nextflow`](https://nextflow.io) pipeline can be used to analyze genomes u
 After cloning into `$HOME` this pipeline can be run locally with `conda` environments like this:
 
 ```
-nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile local,conda
+nextflow run ~/nf-plotsv --samplesheet samplesheet.csv -profile local,conda
 ```
 
 Or locally with docker
 
 ```
-nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile local,docker
+nextflow run ~/nf-plotsv --samplesheet samplesheet.csv -profile local,docker
 ```
 
 Or on biohpc_gen@LRZ using charliecloud
 
 ```
-nextflow run ~/nf-syri --samplesheet samplesheet.csv -profile biohpc_gen,charliecloud
+nextflow run ~/nf-plotsv --samplesheet samplesheet.csv -profile biohpc_gen,charliecloud
 ```
 
 To run on other infrastructure, a matching config needs to be created (or copied from [`nf-core/configs`](https://github.com/nf-core/configs/tree/master/conf))
@@ -121,3 +121,12 @@ This pipeline uses the following packages:
  - [`fixchr`](https://github.com/schneebergerlab/fixchr)
 
  - [`plotsr`](https://github.com/schneebergerlab/plotsr)
+
+# Cite
+- Goel, M., Sun, H., Jiao, WB. et al. SyRI: finding genomic rearrangements and local sequence differences from whole-genome assemblies. Genome Biol 20, 277 (2019). https://doi.org/10.1186/s13059-019-1911-0
+
+- Goel M, Schneeberger K. plotsr: visualizing structural similarities and rearrangements between multiple genomes. Bioinformatics. 2022 May 13;38(10):2922-2926. doi: 10.1093/bioinformatics/btac196
+
+- Li H. Minimap2: pairwise alignment for nucleotide sequences. Bioinformatics. 2018 Sep 15;34(18):3094-3100. doi: 10.1093/bioinformatics/bty191
+
+- Shen W, Le S, Li Y, Hu F. SeqKit: A Cross-Platform and Ultrafast Toolkit for FASTA/Q File Manipulation. PLoS One. 2016 Oct 5;11(10):e0163962. doi: 10.1371/journal.pone.0163962
