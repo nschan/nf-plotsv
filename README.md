@@ -2,6 +2,8 @@
 
 This [`nextflow`](https://nextflow.io) pipeline can be used to analyze genomes using [`syri`](https://schneebergerlab.github.io/syri/) and [`plotsr`](https://github.com/schneebergerlab/plotsr/). Whole genome alignments are created using minimap2, oriented and re-alinged if needed, and then passed to syri and then to plotsr.
 
+This pipeline by default uses [`plotsr`](https://github.com/schneebergerlab/plotsr/), which is a nice tool. Since I prefer `R` for plotting, I have created a parser for syri output that can be used to plot syri output via the excellent [`gggenomes`](https://github.com/thackl/gggenomes) package. If this sounds interesting, have a look here: https://github.com/nschan/syri_gggenomes
+
 
 # Usage
 
