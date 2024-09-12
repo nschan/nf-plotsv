@@ -46,7 +46,7 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 |  ---  |  ---   |   ---   |
 | samplesheet | Samplesheet to be used | `false` |
 | reference  | Reference Name | `'Col-CEN_v1.2'` |
-| ref_genome | Referemce genome fasta | `'/dss/dsslegfs01/pn73so/pn73so-dss-0000/becker_common/reference_genomes/Arabidopsis/Col-CEN/Col-CEN_v1.2.fasta'` |
+| ref_genome | Referemce genome fasta | `'$projectDir/assets/Col-CEN_v1.2.fasta'` |
 | reorient | Reorient sequences to have them all go the same direction? This option does not work with `-profile conda` | `false` |
 | pairwise | Use pairwise mode (see below) | `true` |
 | subset_pattern | Pattern used for subsetting genomes in samplesheet | `"Chr[1-5]"` |
