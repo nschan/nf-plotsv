@@ -134,6 +134,7 @@ This pipeline uses the following packages:
  - [`plotsr`](https://github.com/schneebergerlab/plotsr)
 
 # Cite
+
 - Goel, M., Sun, H., Jiao, WB. et al. SyRI: finding genomic rearrangements and local sequence differences from whole-genome assemblies. Genome Biol 20, 277 (2019). https://doi.org/10.1186/s13059-019-1911-0
 
 - Goel M, Schneeberger K. plotsr: visualizing structural similarities and rearrangements between multiple genomes. Bioinformatics. 2022 May 13;38(10):2922-2926. doi: 10.1093/bioinformatics/btac196
@@ -141,3 +142,8 @@ This pipeline uses the following packages:
 - Li H. Minimap2: pairwise alignment for nucleotide sequences. Bioinformatics. 2018 Sep 15;34(18):3094-3100. doi: 10.1093/bioinformatics/bty191
 
 - Shen W, Le S, Li Y, Hu F. SeqKit: A Cross-Platform and Ultrafast Toolkit for FASTA/Q File Manipulation. PLoS One. 2016 Oct 5;11(10):e0163962. doi: 10.1371/journal.pone.0163962
+
+# Contributors
+
+The pipeline was originally written by [Niklas Schandry](https://github.com/nschan). The plotsr-pairwise nextflow module was greatly improved by [Mahesh Binzer-Panchal](https://github.com/mahesh-panchal).
+If you would like to contribute to this pipeline, please open issues and / or pull requests.
