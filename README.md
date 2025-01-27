@@ -35,6 +35,8 @@ Samplesheet layout is
 
 ```
 name,fasta
+genome1,path/to/genome1.fa
+genome2,path/to/genome2.fa
 ```
 
 Reference name can be provided using `--reference`, reference genome path is `--ref_genome`.
@@ -47,8 +49,8 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 | Parameter | Effect | Default |
 |  ---  |  ---   |   ---   |
 | samplesheet | Samplesheet to be used | `false` |
-| reference  | Reference Name | `'Col-CEN_v1.2'` |
-| ref_genome | Referemce genome fasta | `'$projectDir/assets/Col-CEN_v1.2.fasta'` |
+| reference  | Reference Name, ignored in pairwise mode | `'Col-CEN_v1.2'` |
+| ref_genome | Referemce genome fasta, ignored in pairwise mode | `'$projectDir/assets/Col-CEN_v1.2.fasta'` |
 | reorient | Reorient sequences to have them all go the same direction? This option does not work with `-profile conda` | `false` |
 | pairwise | Use pairwise mode (see below) | `true` |
 | subset_pattern | Pattern used for subsetting genomes in samplesheet | `"Chr[1-5]"` |
@@ -63,10 +65,15 @@ Default params are defined in [`nextflow.config`](nextflow.config):
 
 > plotsr_colors need to be provided as hex, see nextflow.config
 
-### Pairwise mode
+### Pairwise mode (Default)
 
 `--pairwise`: create consecutive pairwise alignments from the samplesheet to create a plot across many genomes.
-This will create pairwise alignments from top to bottom of the samplesheet (i.e. align row2 on row1, row3 on row2, row4 on row3, etc) and then create a _single_ plot using plotsr.
+This will create pairwise alignments from top to bottom of the samplesheet (i.e. align row2 on row1, row3 on row2, row4 on row3, etc) and then create a _single_ plot using plotsr. 
+Pairwise mode ignores the reference.
+
+### Non-pairwise mode
+
+In normal mode, each sample in the samplesheet will be compared to the provided reference. The pipeline will produce one plot per sample, showing the comparison between that sample and the reference.
 
 ### plotsr
 
