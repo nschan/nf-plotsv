@@ -27,7 +27,52 @@ process PLOTSR {
             -o ${meta}_on_${reference}.plotsr.pdf 
         """
 }
+
 process PLOTSR_PAIRWISE {
+    tag "BIGPLOT"
+    label 'process_low'
+    publishDir(
+      path: { "${params.out}/${task.process}".replace(':','/').toLowerCase() },
+      mode: 'copy',
+      overwrite: true,
+      saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
+    )
+
+    input:
+        path in_files
+        val names
+        val genomes
+        path plotsr_conf
+        val extra_args
+        val tracks
+        val palette
+
+    output:
+        path("*.pdf"), emit: figure
+
+    script:
+    def plotsr_tracks = tracks ? "--tracks ${tracks}" : ''
+    def plotsr_palette = palette ?: '#8F7C00'
+    def color_list = plotsr_palette.split(',').collect { it.replaceAll('#', '\\#') }
+    def names_list = names.collect { it.replaceAll(/[\[\],]/, '') }
+    def genomes_list = genomes.collect { it.replaceAll(/[\[\],]/, '') }
+    def name_colours = names.indices.collect { index -> "lc:${color_list[index % color_list.size()]}" }
+    def plotsr_in = [ names_list, genomes_list, name_colours ].transpose()
+    """
+    # Create plotsr input file
+    printf '%s\\t%s\\t%s\\n' ${plotsr_in.flatten().join(" ")} > plotsr_infile.tsv
+
+    # Run plotsr command
+    plotsr --genomes plotsr_infile.tsv \\
+        ${in_files.collect{ f -> "--sr $f" }.join(' ')} \\
+        --cfg ${plotsr_conf} \\
+        ${extra_args} \\
+        ${plotsr_tracks} \\
+        -o plot.pdf
+    """
+}
+
+process PLOTSR_PAIRWISE_OLD {
     tag "BIGPLOT"
     label 'process_low'
     publishDir(
