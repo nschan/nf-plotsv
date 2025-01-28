@@ -89,7 +89,6 @@ This workflow is simple, and largely an exercise in manipulating channels.
   In pairwise mode, the input channel is collated so that two consecutive rows become a tuple, which is then unnnested
   After passing everything through alingment and syri, the syri outputs are joined to input channel (to preserve the order)
   and then collected into a tuple which is deconstructed in PLOTSR_PAIRWISE into a list of arguments.
-  The nextflow part is okay, but naturally the PLOTSR_PAIRWISE process is a pile of bash.
 */
 
 workflow PLOTSV {
@@ -115,7 +114,8 @@ workflow PLOTSV {
       .set { ch_chunked }
       
 
-    ch_chunked.map { it -> [name_A: it[0].name, genome_A: it[0].path, name_B: it[1].name, genome_B: it[1].path]}
+    ch_chunked
+      .map { it -> [name_A: it[0].name, genome_A: it[0].path, name_B: it[1].name, genome_B: it[1].path]}
       .set { ch_chunked }
 
     ch_chunked
