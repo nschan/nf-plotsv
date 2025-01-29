@@ -41,8 +41,8 @@ process SEQTK_SUBSET {
     output:
         tuple val(meta), path("*_subset.fa"), emit: subset
 
-    def pattern = params.subset_pattern
     script:
+    def pattern = params.subset_pattern
         """
         grep $pattern ${genome} | sed 's/>//' > names.lst
         seqtk subseq ${genome} names.lst > ${genome.baseName}_subset.fa
