@@ -11,6 +11,7 @@ include { PLOTSR } from './modules/plotsr/main'
 include { ALIGN_PAIRWISE } from './modules/align/main'
 include { SYRI_PAIRWISE } from './modules/syri/main' 
 include { PLOTSR_PAIRWISE } from './modules/plotsr/main' 
+include { PLOTSR_PAIRWISE_OLD } from './modules/plotsr/main' 
 
 
 /*
@@ -144,7 +145,7 @@ workflow PLOTSV {
       .collect()
       .set { ch_names }
 
-    PLOTSR_PAIRWISE(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf, params.plotsr_args, params.plotsr_tracks, params.plotsr_colors)
+    PLOTSR_PAIRWISE_OLD(plotsr_in, ch_names, ch_prepared_files, params.plotsr_conf, params.plotsr_args, params.plotsr_tracks, params.plotsr_colors)
     
   } else {
     ALIGN_GENOMES(PREPARE_GENOMES.out, tuple(params.reference, params.ref_genome))

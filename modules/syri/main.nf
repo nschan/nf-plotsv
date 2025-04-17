@@ -34,7 +34,7 @@ process SYRI_PAIRWISE {
       saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     ) 
     input:
-        tuple val(name_A), path(genome_A), val(name_B), path(genome_B), path(alignment), path(index)
+        tuple val(name_A), path(genome_A, stageAs: "genome_A/*"), val(name_B), path(genome_B, stageAs: "genome_B/*"), path(alignment), path(index)
 
     output:
         tuple val(name_A), val(name_B), path("*syri.out"), emit: syri_out
