@@ -9,8 +9,8 @@ process ALIGN_GENOMES {
       saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     ) 
     input:
-        tuple val(query), path(query_genome)
-        tuple val(reference), path(reference_genome)
+        tuple val(query), path(query_genome, stageAs: "query/*")
+        tuple val(reference), path(reference_genome, stageAs: "reference/*")
 
     output:
         tuple val(reference), path(reference_genome), val(query), path(query_genome), path("*.bam"),path("*.bai"), emit: alignment
@@ -37,7 +37,7 @@ process ALIGN_PAIRWISE {
       saveAs: { fn -> fn.substring(fn.lastIndexOf('/')+1) }
     ) 
     input:
-        tuple val(name_A), path(genome_A), val(name_B), path(genome_B)
+        tuple val(name_A), path(genome_A, stageAs: "genome_A/*"), val(name_B), path(genome_B, stageAs: "genome_B/*")
 
     output:
         tuple val(name_A), path(genome_A), val(name_B), path(genome_B), path("*.bam"), path("*.bai"), emit: alignment
