@@ -44,7 +44,13 @@ process SEQTK_SUBSET {
     script:
     def pattern = params.subset_pattern
         """
-        grep $pattern ${genome} | sed 's/>//' > names.lst
-        seqtk subseq ${genome} names.lst > ${genome.baseName}_subset.fa
+        if [[ ${genome} == *.gz ]];
+            then
+                gzip -dc ${genome} > ${meta}_genome.fa
+        else
+            ln -s ${genome} ${meta}_genome.fa
+        fi
+        grep $pattern ${meta}_genome.fa | sed 's/>//' > names.lst
+        seqtk subseq ${meta}_genome.fa names.lst > ${meta}_subset.fa
         """
 }
